@@ -2,6 +2,7 @@
   "name": "ut-port-performance",
   "version": "5.0.0",
   "dependencies": {
+    "lynx": "~0.2.1",
     "ut-bus": "~5.0.0"
   },
   "publishConfig": {
