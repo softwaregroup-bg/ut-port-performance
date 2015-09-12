@@ -1,9 +1,11 @@
 {
   "name": "ut-port-performance",
-  "version": "5.0.0",
+  "version": "5.2.0",
   "dependencies": {
-    "lynx": "~0.2.1",
-    "ut-bus": "~5.0.0"
+    "lynx": "~0.2.0"
+  },
+  "peerDependencies":{
+    "ut-bus": "~5.2.0"
   },
   "publishConfig": {
     "registry": "http://npm.softwaregroup-bg.com:5001"
