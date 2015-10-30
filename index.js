@@ -134,7 +134,7 @@ PerformancePort.prototype.start = function start() {
             client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
                 this.log.error && this.log.error(err);
             }.bind(this));
-            console.log(message);
+            //console.log(message);
         }.bind(this), this.config.influx.interval || 1000);
     }
 };
