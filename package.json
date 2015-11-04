@@ -1,10 +1,10 @@
 {
   "name": "ut-port-performance",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "dependencies": {
     "lynx": "~0.2.0"
   },
-  "peerDependencies":{
+  "peerDependencies": {
     "ut-bus": "~5.2.0"
   },
   "publishConfig": {
