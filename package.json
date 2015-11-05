@@ -1,6 +1,6 @@
 {
   "name": "ut-port-performance",
-  "version": "5.2.4",
+  "version": "5.2.5",
   "dependencies": {
     "lynx": "~0.2.0"
   },
