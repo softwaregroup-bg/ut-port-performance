@@ -1,3 +1,5 @@
+var hrtime = require('browser-process-hrtime');
+
 var namespaces = {};
 
 var types = {
@@ -23,120 +25,139 @@ var types = {
 };
 
 var stats = {
-    gauge: function(code, counter) {
+    gauge: function(code, time, counter) {
         return code + '=' + counter;
     },
-    counter: function(code, counter) {
-        return code + '=' + counter;
+    counter: function(code, time, counter) {
+        return code + '=' + (time ? counter / time : 0);
     },
-    average: function(code, counter, denominator) {
+    average: function(code, time, counter, denominator) {
         return code + '=' + (counter / denominator);
     }
 };
 
 var influx = {
-    gauge: function(code, counter) {
+    gauge: function(code, time, counter) {
         return code + '=' + counter;
     },
-    counter: function(code, counter, counterDelta) {
-        return code + '=' + counterDelta;
+    counter: function(code, time, counter, counterDelta) {
+        return code + '=' + (time ? counterDelta / time : 0);
     },
-    average: function(code, counter, counterDelta, denominator, denominatorDelta) {
+    average: function(code, time, counter, counterDelta, denominator, denominatorDelta) {
         return code + '=' + (denominatorDelta ? (counterDelta / denominatorDelta) : 0);
     }
 };
 
-var Port = require('ut-bus/port');
-var util = require('util');
+module.exports = function(Parent) {
 
-function PerformancePort() {
-    Port.call(this);
-    this.config = {
-        id: null,
-        logLevel: '',
-        type: 'performance'
-    };
-}
-
-util.inherits(PerformancePort, Port);
-
-PerformancePort.prototype.register = function performancePortRegister(namespace, type, code, name) {
-    var metrics = namespaces[namespace];
-    if (!metrics) {
-        metrics = {
-            counters: [0],
-            countersDelta: [0],
-            denominators: [0],
-            denominatorsDelta: [0],
-            names: [name],
-            codes: [code],
-            dump: {
-                stats: [stats[type]],
-                influx: [influx[type]]
-            }
+    function PerformancePort() {
+        Parent && Parent.call(this);
+        this.config = {
+            id: null,
+            logLevel: '',
+            type: 'performance'
         };
-        namespaces[namespace] = metrics;
-    } else {
-        metrics.counters.push(0);
-        metrics.countersDelta.push(0);
-        metrics.denominators.push(0);
-        metrics.denominatorsDelta.push(0);
-        metrics.dump.stats.push(stats[type]);
-        metrics.dump.influx.push(influx[type]);
-        metrics.names.push(name);
-        metrics.codes.push(code);
+        this.influxTime = [];
+        this.statsTime = [];
     }
-    return types[type](metrics.counters.length - 1, metrics.counters, metrics.countersDelta, metrics.denominators, metrics.denominatorsDelta);
-};
 
-PerformancePort.prototype.influx = function influx() {
-    return Object.keys(namespaces).map(function(namespace) {
+    if (Parent) {
+        var util = require('util');
+        util.inherits(PerformancePort, Parent);
+    }
+
+    PerformancePort.prototype.register = function performancePortRegister(namespace, type, code, name) {
         var metrics = namespaces[namespace];
-        var codes = metrics.codes;
-        var counters = metrics.counters;
-        var countersDelta = metrics.countersDelta;
-        var denominatorsDelta = metrics.denominatorsDelta;
-        var denominators = metrics.denominators;
-        return namespace + ' ' + metrics.dump.influx.reduce(function(prev, current, index) {
-                var value = current(codes[index], counters[index], countersDelta[index], denominators[index], denominatorsDelta[index]);
+        if (!metrics) {
+            metrics = {
+                counters: [0],
+                countersDelta: [0],
+                denominators: [0],
+                denominatorsDelta: [0],
+                names: [name],
+                codes: [code],
+                dump: {
+                    stats: [stats[type]],
+                    influx: [influx[type]]
+                }
+            };
+            namespaces[namespace] = metrics;
+        } else {
+            metrics.counters.push(0);
+            metrics.countersDelta.push(0);
+            metrics.denominators.push(0);
+            metrics.denominatorsDelta.push(0);
+            metrics.dump.stats.push(stats[type]);
+            metrics.dump.influx.push(influx[type]);
+            metrics.names.push(name);
+            metrics.codes.push(code);
+        }
+        return types[type](metrics.counters.length - 1, metrics.counters, metrics.countersDelta, metrics.denominators, metrics.denominatorsDelta);
+    };
+
+    PerformancePort.prototype.influx = function influx() {
+        var oldTime = this.influxTime;
+        this.influxTime = hrtime();
+        var deltaTime = (this.influxTime[0] - oldTime[0]) + (this.influxTime[0] - oldTime[0]) / 1000000000;
+
+        return Object.keys(namespaces).map(function(namespace) {
+            var metrics = namespaces[namespace];
+            var codes = metrics.codes;
+            var counters = metrics.counters;
+            var countersDelta = metrics.countersDelta;
+            var denominatorsDelta = metrics.denominatorsDelta;
+            var denominators = metrics.denominators;
+            return namespace + ' ' + metrics.dump.influx.reduce(function(prev, current, index) {
+                    var value = current(codes[index], deltaTime, counters[index], countersDelta[index], denominators[index], denominatorsDelta[index]);
+                    countersDelta[index] = 0;
+                    denominatorsDelta[index] = 0;
+                    return prev + (index ? ',' : '') + value;
+                }, '') + ' ' + Date.now() + '000000';
+        });
+    };
+
+    PerformancePort.prototype.stats = function stats() {
+        var oldTime = this.statsTime;
+        this.statsTime = hrtime();
+        var deltaTime = (this.statsTime[0] - oldTime[0]) + (this.statsTime[0] - oldTime[0]) / 1000000000;
+
+        return Object.keys(namespaces).map(function(namespace) {
+            var metrics = namespaces[namespace];
+            var codes = metrics.codes;
+            var counters = metrics.counters;
+            var countersDelta = metrics.countersDelta;
+            var denominatorsDelta = metrics.denominatorsDelta;
+            var denominators = metrics.denominators;
+            return metrics.dump.stats.reduce(function(prev, current, index) {
+                var value = current(codes[index], deltaTime, counters[index], countersDelta[index], denominators[index], denominatorsDelta[index]);
                 countersDelta[index] = 0;
                 denominatorsDelta[index] = 0;
-                return prev + (index ? ',' : '') + value;
-            }, '') + ' ' + Date.now() + '000000';
-    });
+                return prev + (index ? '' : '\n') + namespace + '.' + value;
+            }, '');
+        });
+    };
+
+    var interval;
+
+    PerformancePort.prototype.start = function start() {
+        var dgram = require('dgram');
+        var client = dgram.createSocket('udp4');
+        Parent && Parent.prototype.start.apply(this, arguments);
+        this.statsTime = this.influxTime = hrtime();
+        if (this.config && this.config.influx && this.config.influx.port && this.config.influx.host) {
+            interval = setInterval(function() {
+                var message = this.influx().join('\n');
+                client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
+                    this.log && this.log.error && this.log.error(err);
+                }.bind(this));
+                //console.log(message);
+            }.bind(this), this.config.influx.interval || 5000);
+        }
+    };
+
+    PerformancePort.prototype.stop = function stop() {
+        clearInterval(interval);
+    };
+
+    return PerformancePort;
 };
-
-PerformancePort.prototype.stats = function stats() {
-    return Object.keys(namespaces).map(function(namespace) {
-        var metrics = namespaces[namespace];
-        var codes = metrics.codes;
-        var counters = metrics.counters;
-        var countersDelta = metrics.countersDelta;
-        var denominatorsDelta = metrics.denominatorsDelta;
-        var denominators = metrics.denominators;
-        return metrics.dump.stats.reduce(function(prev, current, index) {
-            var value = current(codes[index], counters[index], countersDelta[index], denominators[index], denominatorsDelta[index]);
-            countersDelta[index] = 0;
-            denominatorsDelta[index] = 0;
-            return prev + (index ? '' : '\n') + namespace + '.' + value;
-        }, '');
-    });
-};
-
-var dgram = require('dgram');
-var client = dgram.createSocket('udp4');
-
-PerformancePort.prototype.start = function start() {
-    Port.prototype.start.apply(this, arguments);
-    if (this.config && this.config.influx && this.config.influx.port && this.config.influx.host) {
-        setInterval(function() {
-            var message = this.influx().join('\n');
-            client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
-                this.log.error && this.log.error(err);
-            }.bind(this));
-            //console.log(message);
-        }.bind(this), this.config.influx.interval || 1000);
-    }
-};
-
-module.exports = PerformancePort;
