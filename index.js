@@ -49,7 +49,6 @@ var influx = {
 };
 
 module.exports = function(Parent) {
-
     function PerformancePort() {
         Parent && Parent.call(this);
         this.config = {
@@ -108,11 +107,11 @@ module.exports = function(Parent) {
             var denominatorsDelta = metrics.denominatorsDelta;
             var denominators = metrics.denominators;
             return namespace + ' ' + metrics.dump.influx.reduce(function(prev, current, index) {
-                    var value = current(codes[index], deltaTime, counters[index], countersDelta[index], denominators[index], denominatorsDelta[index]);
-                    countersDelta[index] = 0;
-                    denominatorsDelta[index] = 0;
-                    return prev + (index ? ',' : '') + value;
-                }, '') + ' ' + Date.now() + '000000';
+                var value = current(codes[index], deltaTime, counters[index], countersDelta[index], denominators[index], denominatorsDelta[index]);
+                countersDelta[index] = 0;
+                denominatorsDelta[index] = 0;
+                return prev + (index ? ',' : '') + value;
+            }, '') + ' ' + Date.now() + '000000';
         });
     };
 
@@ -150,7 +149,7 @@ module.exports = function(Parent) {
                 client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
                     this.log && this.log.error && this.log.error(err);
                 }.bind(this));
-                //console.log(message);
+                // console.log(message);
             }.bind(this), this.config.influx.interval || 5000);
         }
     };

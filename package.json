@@ -4,11 +4,18 @@
   "dependencies": {
     "browser-process-hrtime": "0.1.2"
   },
+  "devDependencies": {
+    "ut-tools": "~0.5.1"
+  },
   "peerDependencies": {},
   "publishConfig": {
     "registry": "http://npm.softwaregroup-bg.com:5001"
   },
   "description": "UT port performance module",
+  "scripts": {
+    "test": "npm run lint",
+    "lint": "ut-lint ."
+  },
   "repository": {
     "type": "git",
     "url": "git@git.softwaregroup-bg.com:ut5/ut-port-performance.git"
