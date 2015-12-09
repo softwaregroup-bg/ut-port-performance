@@ -1,0 +1,11 @@
+{
+  "name": "ut-port-performance",
+  "version": "5.3.3",
+  "dependencies": {
+    "browser-process-hrtime": {
+      "version": "0.1.2",
+      "from": "browser-process-hrtime@0.1.2",
+      "resolved": "http://npm.softwaregroup-bg.com:5001/browser-process-hrtime/-/browser-process-hrtime-0.1.2.tgz"
+    }
+  }
+}
