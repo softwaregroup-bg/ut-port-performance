@@ -137,10 +137,11 @@ module.exports = function(Parent) {
     };
 
     var interval;
+    var client;
 
     PerformancePort.prototype.start = function start() {
         var dgram = require('dgram');
-        var client = dgram.createSocket('udp4');
+        client = dgram.createSocket('udp4');
         Parent && Parent.prototype.start.apply(this, arguments);
         this.statsTime = this.influxTime = hrtime();
         if (this.config && this.config.influx && this.config.influx.port && this.config.influx.host) {
@@ -156,6 +157,8 @@ module.exports = function(Parent) {
 
     PerformancePort.prototype.stop = function stop() {
         clearInterval(interval);
+        client && client.end() && client.unref();
+        client = null;
     };
 
     return PerformancePort;
