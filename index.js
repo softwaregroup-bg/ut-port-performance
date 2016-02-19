@@ -157,7 +157,7 @@ module.exports = function(Parent) {
 
     PerformancePort.prototype.stop = function stop() {
         clearInterval(interval);
-        client && client.end() && client.unref();
+        client && client.close() && client.unref();
         client = null;
     };
 
