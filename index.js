@@ -165,8 +165,8 @@ module.exports = function(Parent) {
         }
         client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
             this.log && this.log.error && this.log.error(err);
+            client.close();
         }.bind(this));
-        client.close();
     };
 
     return PerformancePort;
