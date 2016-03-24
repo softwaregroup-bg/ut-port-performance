@@ -162,12 +162,9 @@ module.exports = function(Parent) {
     };
 
     PerformancePort.prototype.write = function write(tags) {
-        var dgram = require('dgram');
-        var client = dgram.createSocket('udp4');
         var message = this.influx(tags).join('\n');
-        client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
+        this.client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
             this.log && this.log.error && this.log.error(err);
-            client.close();
         }.bind(this));
     };
 
