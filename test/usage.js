@@ -11,7 +11,7 @@ perf.config.influx = {
 var speed = perf.register('port1', 'counter', 'spd', 'Operations count per second');
 var delay = perf.register('port1', 'average', 'dly', 'Time per operation(ms)');
 
-// perf.start(); //start sending metrics to influx
+// perf.start(); // start sending metrics to influx
 
 var log = setInterval(function() { // log metrics to console on each second
     console.log(perf.influx().join());
