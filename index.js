@@ -163,7 +163,7 @@ module.exports = function(Parent) {
 
     PerformancePort.prototype.write = function write(tags) {
         var message = this.influx(tags).join('\n');
-        this.client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
+        client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
             this.log && this.log.error && this.log.error(err);
         }.bind(this));
     };
