@@ -94,7 +94,7 @@ module.exports = function(Parent) {
         return types[type](metrics.counters.length - 1, metrics.counters, metrics.countersDelta, metrics.denominators, metrics.denominatorsDelta);
     };
 
-    PerformancePort.prototype.influx = function influx() {
+    PerformancePort.prototype.influx = function influx(tags) {
         var oldTime = this.influxTime;
         this.influxTime = hrtime();
         var deltaTime = (this.influxTime[0] - oldTime[0]) + (this.influxTime[0] - oldTime[0]) / 1000000000;
@@ -106,7 +106,11 @@ module.exports = function(Parent) {
             var countersDelta = metrics.countersDelta;
             var denominatorsDelta = metrics.denominatorsDelta;
             var denominators = metrics.denominators;
-            return namespace + ' ' + metrics.dump.influx.reduce(function(prev, current, index) {
+            var tagsString = (tags && Object.keys(tags).reduce(function(prev, cur) {
+                prev += ',' + cur + '=' + tags[cur];
+                return prev;
+            }, '')) || '';
+            return namespace + tagsString + ' ' + metrics.dump.influx.reduce(function(prev, current, index) {
                 var value = current(codes[index], deltaTime, counters[index], countersDelta[index], denominators[index], denominatorsDelta[index]);
                 countersDelta[index] = 0;
                 denominatorsDelta[index] = 0;
@@ -157,12 +161,10 @@ module.exports = function(Parent) {
         client = null;
     };
 
-    PerformancePort.prototype.write = function write(message) {
+    PerformancePort.prototype.write = function write(tags) {
         var dgram = require('dgram');
         var client = dgram.createSocket('udp4');
-        if (!message) {
-            message = this.influx().join('\n');
-        }
+        var message = this.influx(tags).join('\n');
         client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
             this.log && this.log.error && this.log.error(err);
             client.close();
