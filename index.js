@@ -148,7 +148,7 @@ module.exports = function(Parent) {
         client = dgram.createSocket('udp4');
         Parent && Parent.prototype.start.apply(this, arguments);
         this.statsTime = this.influxTime = hrtime();
-        if (this.config && this.config.influx && this.config.influx.port && this.config.influx.host && !this.config.test) { // @TODO: discuss better way to identify if mode is test
+        if (this.config && this.config.influx && this.config.influx.port && this.config.influx.host && !this.config.test) {
             interval = setInterval(function() {
                 this.write();
             }.bind(this), this.config.influx.interval || 5000);
