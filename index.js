@@ -107,7 +107,7 @@ module.exports = function(Parent) {
             var denominatorsDelta = metrics.denominatorsDelta;
             var denominators = metrics.denominators;
             var tagsString = (tags && Object.keys(tags).reduce(function(prev, cur) {
-                prev += ',' + cur + '=' + tags[cur];
+                prev += ',' + cur + '=' + (typeof tags[cur] === 'string' ? tags[cur].replace(/ /g, '\\ ') : tags[cur]);
                 return prev;
             }, '')) || '';
             return namespace + tagsString + ' ' + metrics.dump.influx.reduce(function(prev, current, index) {
