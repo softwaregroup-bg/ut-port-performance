@@ -1,3 +1,4 @@
+/* eslint no-console:0 */
 var Perf = require('../index')();
 var perf = new Perf();
 
