@@ -1,3 +1,13 @@
+<a name="5.4.1"></a>
+## [5.4.1](https://git.softwaregroup-bg.com/ut5/ut-port-performance/compare/v5.3.11...v5.4.1) (2016-07-11)
+
+
+### Features
+
+* upgrade dependencies ([b0e7c50](https://git.softwaregroup-bg.com/ut5/ut-port-performance/commit/b0e7c50))
+
+
+
 <a name="5.3.11"></a>
 ## [5.3.11](https://git.softwaregroup-bg.com/ut5/ut-port-performance/compare/v5.3.10...v5.3.11) (2016-04-15)
 
