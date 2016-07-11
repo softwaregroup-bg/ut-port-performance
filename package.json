@@ -1,11 +1,11 @@
 {
   "name": "ut-port-performance",
-  "version": "5.3.11",
+  "version": "5.4.0",
   "dependencies": {
     "browser-process-hrtime": "0.1.2"
   },
   "devDependencies": {
-    "ut-tools": "^5.3.13"
+    "ut-tools": "^5.4.1"
   },
   "peerDependencies": {},
   "publishConfig": {
