@@ -140,30 +140,34 @@ module.exports = function(Parent) {
         });
     };
 
-    var interval;
-    var client;
-
     PerformancePort.prototype.start = function start() {
         var dgram = require('dgram');
-        client = dgram.createSocket('udp4');
+        this.client = dgram.createSocket('udp4');
         Parent && Parent.prototype.start.apply(this, arguments);
         this.statsTime = this.influxTime = hrtime();
         if (this.config && this.config.influx && this.config.influx.port && this.config.influx.host && !this.config.test) {
-            interval = setInterval(function() {
+            this.interval = setInterval(function() {
                 this.write();
             }.bind(this), this.config.influx.interval || 5000);
         }
     };
 
     PerformancePort.prototype.stop = function stop() {
-        clearInterval(interval);
-        client && client.close() && client.unref();
-        client = null;
+        clearInterval(this.interval);
+        if (this.client) {
+            return new Promise((resolve) => {
+                this.client.close(function() {
+                    resolve(true);
+                });
+                this.client.unref();
+                this.client = null;
+            });
+        };
     };
 
     PerformancePort.prototype.write = function write(tags) {
         var message = this.influx(tags).join('\n');
-        client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
+        this.client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
             this.log && this.log.error && this.log.error(err);
         }.bind(this));
     };
