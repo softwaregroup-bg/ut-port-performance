@@ -5,12 +5,9 @@
     "browser-process-hrtime": "0.1.2"
   },
   "devDependencies": {
-    "ut-tools": "^5.4.1"
+    "ut-tools": "^5.6.0"
   },
   "peerDependencies": {},
-  "publishConfig": {
-    "registry": "https://nexus.softwaregroup-bg.com/repository/npm-internal"
-  },
   "description": "UT port performance module",
   "scripts": {
     "lint": "ut-lint .",
@@ -33,6 +30,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git.softwaregroup-bg.com:ut5/ut-port-performance.git"
-  }
+    "url": "git@github.com:softwaregroup-bg/ut-port-performance.git"
+  },
+  "license": "Apache-2.0"
 }
