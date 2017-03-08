@@ -5,7 +5,7 @@
     "browser-process-hrtime": "0.1.2"
   },
   "devDependencies": {
-    "ut-tools": "^5.6.0"
+    "ut-tools": "^5.13.5"
   },
   "peerDependencies": {},
   "description": "UT port performance module",
