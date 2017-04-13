@@ -1,3 +1,13 @@
+<a name="5.4.9"></a>
+## [5.4.9](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.4.8...v5.4.9) (2017-04-13)
+
+
+### Bug Fixes
+
+* only log errors ([11bf111](https://github.com/softwaregroup-bg/ut-port-performance/commit/11bf111))
+
+
+
 <a name="5.4.8"></a>
 ## [5.4.8](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.4.7...v5.4.8) (2017-03-08)
 
