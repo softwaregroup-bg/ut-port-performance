@@ -1,3 +1,8 @@
+<a name="5.4.10"></a>
+## [5.4.10](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.4.9...v5.4.10) (2017-04-24)
+
+
+
 <a name="5.4.9"></a>
 ## [5.4.9](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.4.8...v5.4.9) (2017-04-13)
 
