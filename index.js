@@ -1,21 +1,5 @@
 var hrtime = require('browser-process-hrtime');
-var metrics = {
-    average: require('./lib/metrics/average'),
-    counter: require('./lib/metrics/counter'),
-    gauge: require('./lib/metrics/gauge'),
-    taggedAverage: require('./lib/metrics/taggedAverage'),
-    taggedCounter: require('./lib/metrics/taggedCounter'),
-    taggedGauge: require('./lib/metrics/taggedGauge')
-};
-function getMetric(type) {
-    var Constructor = metrics[type];
-    if (!Constructor) {
-        throw new Error('unknown metric provider');
-    }
-    return function(options) {
-        return new Constructor(options);
-    };
-}
+var MetricsProvider = require('./lib/metricsProvider');
 var namespaces = {};
 
 module.exports = function(Parent) {
@@ -36,12 +20,12 @@ module.exports = function(Parent) {
     }
 
     PerformancePort.prototype.register = function performancePortRegister(namespace, type, code, name) {
-        var metric = namespaces[namespace];
-        if (!metric) {
-            metric = getMetric(type)({code, name});
-            namespaces[namespace] = metric;
+        var metricsProvider = namespaces[namespace];
+        if (!metricsProvider) {
+            metricsProvider = new MetricsProvider(namespace);
+            namespaces[namespace] = metricsProvider;
         }
-        return metric.getHandler();
+        return metricsProvider.register(type, code, name);
     };
 
     PerformancePort.prototype.influx = function influx(tags) {
@@ -64,7 +48,7 @@ module.exports = function(Parent) {
         var deltaTime = (this.statsTime[0] - oldTime[0]) + (this.statsTime[0] - oldTime[0]) / 1000000000;
 
         return Object.keys(namespaces).map(function(namespace) {
-            return namespaces[namespace].statsDump(namespace, deltaTime);
+            return namespaces[namespace].statsDump(deltaTime);
         });
     };
 
