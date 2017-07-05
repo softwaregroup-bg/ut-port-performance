@@ -1,52 +1,6 @@
 var hrtime = require('browser-process-hrtime');
-
-var namespaces = {};
-
-var types = {
-    gauge: function(index, counters) {
-        return function gauge(value) {
-            counters[index] = value;
-        };
-    },
-    counter: function(index, counters, countersDelta) {
-        return function count(value) {
-            counters[index] += value;
-            countersDelta[index] += value;
-        };
-    },
-    average: function(index, counters, countersDelta, denominators, denominatorsDelta) {
-        return function average(value, count) {
-            counters[index] += value;
-            countersDelta[index] += value;
-            denominators[index] += count;
-            denominatorsDelta[index] += count;
-        };
-    }
-};
-
-var stats = {
-    gauge: function(code, time, counter) {
-        return code + '=' + counter;
-    },
-    counter: function(code, time, counter) {
-        return code + '=' + (time ? counter / time : 0);
-    },
-    average: function(code, time, counter, denominator) {
-        return code + '=' + (counter / denominator);
-    }
-};
-
-var influx = {
-    gauge: function(code, time, counter) {
-        return code + '=' + counter;
-    },
-    counter: function(code, time, counter, counterDelta) {
-        return code + '=' + (time ? counterDelta / time : 0);
-    },
-    average: function(code, time, counter, counterDelta, denominator, denominatorDelta) {
-        return code + '=' + (denominatorDelta ? (counterDelta / denominatorDelta) : 0);
-    }
-};
+var Measurement = require('./lib/measurement');
+var measurements = {};
 
 module.exports = function(Parent) {
     function PerformancePort() {
@@ -65,33 +19,13 @@ module.exports = function(Parent) {
         util.inherits(PerformancePort, Parent);
     }
 
-    PerformancePort.prototype.register = function performancePortRegister(namespace, type, code, name) {
-        var metrics = namespaces[namespace];
-        if (!metrics) {
-            metrics = {
-                counters: [0],
-                countersDelta: [0],
-                denominators: [0],
-                denominatorsDelta: [0],
-                names: [name],
-                codes: [code],
-                dump: {
-                    stats: [stats[type]],
-                    influx: [influx[type]]
-                }
-            };
-            namespaces[namespace] = metrics;
-        } else {
-            metrics.counters.push(0);
-            metrics.countersDelta.push(0);
-            metrics.denominators.push(0);
-            metrics.denominatorsDelta.push(0);
-            metrics.dump.stats.push(stats[type]);
-            metrics.dump.influx.push(influx[type]);
-            metrics.names.push(name);
-            metrics.codes.push(code);
+    PerformancePort.prototype.register = function performancePortRegister(measurement, type, code, name) {
+        var measurementInstance = measurements[measurement];
+        if (!measurementInstance) {
+            measurementInstance = new Measurement(measurement);
+            measurements[measurement] = measurementInstance;
         }
-        return types[type](metrics.counters.length - 1, metrics.counters, metrics.countersDelta, metrics.denominators, metrics.denominatorsDelta);
+        return measurementInstance.register(type, code, name);
     };
 
     PerformancePort.prototype.influx = function influx(tags) {
@@ -99,23 +33,12 @@ module.exports = function(Parent) {
         this.influxTime = hrtime();
         var deltaTime = (this.influxTime[0] - oldTime[0]) + (this.influxTime[0] - oldTime[0]) / 1000000000;
 
-        return Object.keys(namespaces).map(function(namespace) {
-            var metrics = namespaces[namespace];
-            var codes = metrics.codes;
-            var counters = metrics.counters;
-            var countersDelta = metrics.countersDelta;
-            var denominatorsDelta = metrics.denominatorsDelta;
-            var denominators = metrics.denominators;
+        return Object.keys(measurements).map(function(measurement) {
             var tagsString = (tags && Object.keys(tags).reduce(function(prev, cur) {
                 prev += ',' + cur + '=' + (typeof tags[cur] === 'string' ? tags[cur].replace(/ /g, '\\ ') : tags[cur]);
                 return prev;
             }, '')) || '';
-            return namespace + tagsString + ' ' + metrics.dump.influx.reduce(function(prev, current, index) {
-                var value = current(codes[index], deltaTime, counters[index], countersDelta[index], denominators[index], denominatorsDelta[index]);
-                countersDelta[index] = 0;
-                denominatorsDelta[index] = 0;
-                return prev + (index ? ',' : '') + value;
-            }, '') + ' ' + Date.now() + '000000';
+            return measurement + tagsString + ' ' + measurements[measurement].influxDump(deltaTime) + ' ' + Date.now() + '000000';
         });
     };
 
@@ -124,19 +47,8 @@ module.exports = function(Parent) {
         this.statsTime = hrtime();
         var deltaTime = (this.statsTime[0] - oldTime[0]) + (this.statsTime[0] - oldTime[0]) / 1000000000;
 
-        return Object.keys(namespaces).map(function(namespace) {
-            var metrics = namespaces[namespace];
-            var codes = metrics.codes;
-            var counters = metrics.counters;
-            var countersDelta = metrics.countersDelta;
-            var denominatorsDelta = metrics.denominatorsDelta;
-            var denominators = metrics.denominators;
-            return metrics.dump.stats.reduce(function(prev, current, index) {
-                var value = current(codes[index], deltaTime, counters[index], countersDelta[index], denominators[index], denominatorsDelta[index]);
-                countersDelta[index] = 0;
-                denominatorsDelta[index] = 0;
-                return prev + (index ? '' : '\n') + namespace + '.' + value;
-            }, '');
+        return Object.keys(measurements).map(function(measurement) {
+            return measurements[measurement].statsDump(deltaTime);
         });
     };
 
@@ -161,6 +73,11 @@ module.exports = function(Parent) {
                 });
                 this.client.unref();
                 this.client = null;
+            })
+            .then(() => {
+                return Promise.all(Object.keys(measurements).map((measurement) => {
+                    return measurements[measurement].dispose();
+                }));
             });
         };
     };
