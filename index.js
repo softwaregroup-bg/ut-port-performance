@@ -22,7 +22,7 @@ module.exports = function(Parent) {
         util.inherits(PerformancePort, Parent);
     }
 
-    PerformancePort.prototype.register = function performancePortRegister(measurementName, tagType, tagCode, tagName, measurementType) {
+    PerformancePort.prototype.register = function performancePortRegister(measurementName, fieldType, fieldCode, fieldName, measurementType) {
         var measurementInstance = measurements[measurementName];
         if (!measurementInstance) {
             var Measurement = measurement[measurementType || 'standard'];
@@ -32,7 +32,7 @@ module.exports = function(Parent) {
             measurementInstance = new Measurement(measurementName);
             measurements[measurementName] = measurementInstance;
         }
-        return measurementInstance.register(tagType, tagCode, tagName);
+        return measurementInstance.register(fieldType, fieldCode, fieldName);
     };
 
     PerformancePort.prototype.influx = function influx(tags) {
