@@ -32,14 +32,18 @@ module.exports = function(Parent) {
         var oldTime = this.influxTime;
         this.influxTime = hrtime();
         var deltaTime = (this.influxTime[0] - oldTime[0]) + (this.influxTime[0] - oldTime[0]) / 1000000000;
-
-        return Object.keys(measurements).map(function(measurement) {
-            var tagsString = (tags && Object.keys(tags).reduce(function(prev, cur) {
-                prev += ',' + cur + '=' + (typeof tags[cur] === 'string' ? tags[cur].replace(/ /g, '\\ ') : tags[cur]);
-                return prev;
-            }, '')) || '';
-            return measurement + tagsString + ' ' + measurements[measurement].influxDump(deltaTime) + ' ' + Date.now() + '000000';
-        });
+        var tagsString = (tags && Object.keys(tags).reduce(function(prev, cur) {
+            prev += ',' + cur + '=' + (typeof tags[cur] === 'string' ? tags[cur].replace(/ /g, '\\ ') : tags[cur]);
+            return prev;
+        }, '')) || '';
+        var suffix = ' ' + Date.now() + '000000';
+        return Object.keys(measurements).reduce(function(prev, measurement) {
+            var dump = measurements[measurement].influxDump(deltaTime);
+            dump.forEach((record) => {
+                prev.push(measurement + tagsString + record + suffix);
+            });
+            return prev;
+        }, []);
     };
 
     PerformancePort.prototype.stats = function stats() {
