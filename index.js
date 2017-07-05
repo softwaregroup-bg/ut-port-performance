@@ -1,5 +1,8 @@
 var hrtime = require('browser-process-hrtime');
-var Measurement = require('./lib/measurement');
+var measurement = {
+    standard: require('./lib/measurement/standard'),
+    tagged: require('./lib/measurement/tagged')
+};
 var measurements = {};
 
 module.exports = function(Parent) {
@@ -19,40 +22,39 @@ module.exports = function(Parent) {
         util.inherits(PerformancePort, Parent);
     }
 
-    PerformancePort.prototype.register = function performancePortRegister(measurement, type, code, name) {
-        var measurementInstance = measurements[measurement];
+    PerformancePort.prototype.register = function performancePortRegister(measurementName, metricType, metricCode, metricName, measurementType) {
+        var measurementInstance = measurements[measurementName];
         if (!measurementInstance) {
-            measurementInstance = new Measurement(measurement);
-            measurements[measurement] = measurementInstance;
+            if (!measurementType) {
+                measurementType = 'standard';
+            }
+            var Constructor = measurement[measurementType || 'standard'];
+            if (!Constructor) {
+                throw new Error('invalid measurement type');
+            }
+            measurementInstance = new Constructor(measurementName);
+            measurements[measurementName] = measurementInstance;
         }
-        return measurementInstance.register(type, code, name);
+        return measurementInstance.register(metricType, metricCode, metricName);
     };
 
     PerformancePort.prototype.influx = function influx(tags) {
         var oldTime = this.influxTime;
         this.influxTime = hrtime();
         var deltaTime = (this.influxTime[0] - oldTime[0]) + (this.influxTime[0] - oldTime[0]) / 1000000000;
-        var tagsString = (tags && Object.keys(tags).reduce(function(prev, cur) {
-            prev += ',' + cur + '=' + (typeof tags[cur] === 'string' ? tags[cur].replace(/ /g, '\\ ') : tags[cur]);
-            return prev;
-        }, '')) || '';
         var suffix = ' ' + Date.now() + '000000';
-        return Object.keys(measurements).reduce(function(prev, measurement) {
-            var dump = measurements[measurement].influxDump(deltaTime);
-            dump.forEach((record) => {
-                prev.push(measurement + tagsString + record + suffix);
-            });
-            return prev;
-        }, []);
+        return Object.keys(measurements).map(function(measurement) {
+            return measurements[measurement].influxDump(deltaTime, tags, suffix);
+        });
     };
 
-    PerformancePort.prototype.stats = function stats() {
+    PerformancePort.prototype.stats = function stats(tags) {
         var oldTime = this.statsTime;
         this.statsTime = hrtime();
         var deltaTime = (this.statsTime[0] - oldTime[0]) + (this.statsTime[0] - oldTime[0]) / 1000000000;
-
+        var suffix = ' ' + Date.now() + '000000';
         return Object.keys(measurements).map(function(measurement) {
-            return measurements[measurement].statsDump(deltaTime);
+            return measurements[measurement].statsDump(deltaTime, tags, suffix);
         });
     };
 
