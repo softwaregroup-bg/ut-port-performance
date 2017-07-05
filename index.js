@@ -1,7 +1,7 @@
 var hrtime = require('browser-process-hrtime');
 var measurement = {
-    standard: require('./lib/measurement/standard'),
-    tagged: require('./lib/measurement/tagged')
+    standard: require('./lib/measurements/standard'),
+    tagged: require('./lib/measurements/tagged')
 };
 var measurements = {};
 
@@ -25,14 +25,11 @@ module.exports = function(Parent) {
     PerformancePort.prototype.register = function performancePortRegister(measurementName, metricType, metricCode, metricName, measurementType) {
         var measurementInstance = measurements[measurementName];
         if (!measurementInstance) {
-            if (!measurementType) {
-                measurementType = 'standard';
-            }
-            var Constructor = measurement[measurementType || 'standard'];
-            if (!Constructor) {
+            var Measurement = measurement[measurementType || 'standard'];
+            if (!Measurement) {
                 throw new Error('invalid measurement type');
             }
-            measurementInstance = new Constructor(measurementName);
+            measurementInstance = new Measurement(measurementName);
             measurements[measurementName] = measurementInstance;
         }
         return measurementInstance.register(metricType, metricCode, metricName);
