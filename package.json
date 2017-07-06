@@ -1,6 +1,6 @@
 {
   "name": "ut-port-performance",
-  "version": "5.4.17",
+  "version": "5.5.0-taggedMeasurement.0",
   "dependencies": {
     "browser-process-hrtime": "0.1.2"
   },
