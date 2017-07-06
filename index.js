@@ -1,9 +1,8 @@
 var hrtime = require('browser-process-hrtime');
-var measurement = {
+var measurementConstructor = {
     standard: require('./lib/measurements/standard'),
     tagged: require('./lib/measurements/tagged')
 };
-var measurements = {};
 
 module.exports = function(Parent) {
     function PerformancePort() {
@@ -15,6 +14,7 @@ module.exports = function(Parent) {
         };
         this.influxTime = [];
         this.statsTime = [];
+        this.measurements = {};
     }
 
     if (Parent) {
@@ -23,14 +23,14 @@ module.exports = function(Parent) {
     }
 
     PerformancePort.prototype.register = function performancePortRegister(measurementName, fieldType, fieldCode, fieldName, measurementType) {
-        var measurementInstance = measurements[measurementName];
+        var measurementInstance = this.measurements[measurementName];
         if (!measurementInstance) {
-            var Measurement = measurement[measurementType || 'standard'];
+            var Measurement = measurementConstructor[measurementType || 'standard'];
             if (!Measurement) {
                 throw new Error('invalid measurement type');
             }
             measurementInstance = new Measurement(measurementName);
-            measurements[measurementName] = measurementInstance;
+            this.measurements[measurementName] = measurementInstance;
         }
         return measurementInstance.register(fieldType, fieldCode, fieldName);
     };
@@ -40,8 +40,8 @@ module.exports = function(Parent) {
         this.influxTime = hrtime();
         var deltaTime = (this.influxTime[0] - oldTime[0]) + (this.influxTime[0] - oldTime[0]) / 1000000000;
         var suffix = ' ' + Date.now() + '000000';
-        return Object.keys(measurements).map(function(measurement) {
-            return measurements[measurement].influxDump(deltaTime, tags, suffix);
+        return Object.keys(this.measurements).map((measurement) => {
+            return this.measurements[measurement].influx(deltaTime, tags, suffix);
         });
     };
 
@@ -50,8 +50,8 @@ module.exports = function(Parent) {
         this.statsTime = hrtime();
         var deltaTime = (this.statsTime[0] - oldTime[0]) + (this.statsTime[0] - oldTime[0]) / 1000000000;
         var suffix = ' ' + Date.now() + '000000';
-        return Object.keys(measurements).map(function(measurement) {
-            return measurements[measurement].statsDump(deltaTime, tags, suffix);
+        return Object.keys(this.measurements).map((measurement) => {
+            return this.measurements[measurement].statsD(deltaTime, tags, suffix);
         });
     };
 
@@ -76,11 +76,6 @@ module.exports = function(Parent) {
                 });
                 this.client.unref();
                 this.client = null;
-            })
-            .then(() => {
-                return Promise.all(Object.keys(measurements).map((measurement) => {
-                    return measurements[measurement].dispose();
-                }));
             });
         };
     };
