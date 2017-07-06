@@ -42,7 +42,7 @@ module.exports = function(Parent) {
         var suffix = ' ' + Date.now() + '000000';
         return Object.keys(this.measurements).map((measurement) => {
             return this.measurements[measurement].influx(deltaTime, tags, suffix);
-        });
+        }).filter(x => x);
     };
 
     PerformancePort.prototype.stats = function stats(tags) {
@@ -52,7 +52,7 @@ module.exports = function(Parent) {
         var suffix = ' ' + Date.now() + '000000';
         return Object.keys(this.measurements).map((measurement) => {
             return this.measurements[measurement].statsD(deltaTime, tags, suffix);
-        });
+        }).filter(x => x);
     };
 
     PerformancePort.prototype.start = function start() {
