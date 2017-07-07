@@ -42,7 +42,7 @@ module.exports = function(Parent) {
         var suffix = ' ' + Date.now() + '000000';
         return Object.keys(this.measurements).map((measurement) => {
             return this.measurements[measurement].influx(deltaTime, tags, suffix);
-        });
+        }).filter(x => x);
     };
 
     PerformancePort.prototype.stats = function stats(tags) {
@@ -52,7 +52,7 @@ module.exports = function(Parent) {
         var suffix = ' ' + Date.now() + '000000';
         return Object.keys(this.measurements).map((measurement) => {
             return this.measurements[measurement].statsD(deltaTime, tags, suffix);
-        });
+        }).filter(x => x);
     };
 
     PerformancePort.prototype.start = function start() {
@@ -82,9 +82,11 @@ module.exports = function(Parent) {
 
     PerformancePort.prototype.write = function write(tags) {
         var message = this.influx(tags).join('\n');
-        this.client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, function(err) {
-            err && this.log && this.log.error && this.log.error(err);
-        }.bind(this));
+        if (message) {
+            this.client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, (err) => {
+                err && this.log && this.log.error && this.log.error(err);
+            });
+        }
     };
 
     return PerformancePort;
