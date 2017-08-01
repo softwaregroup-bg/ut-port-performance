@@ -1,3 +1,34 @@
+<a name="5.5.0"></a>
+# [5.5.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.4.17...v5.5.0) (2017-08-01)
+
+
+### Bug Fixes
+
+* don't send the packed if there are nothing to be sent ([39e18d7](https://github.com/softwaregroup-bg/ut-port-performance/commit/39e18d7))
+* improvements ([22036a8](https://github.com/softwaregroup-bg/ut-port-performance/commit/22036a8))
+* refactor ([f7661de](https://github.com/softwaregroup-bg/ut-port-performance/commit/f7661de))
+* refactor abstract metric ([d1472a2](https://github.com/softwaregroup-bg/ut-port-performance/commit/d1472a2))
+* refactoring ([4193888](https://github.com/softwaregroup-bg/ut-port-performance/commit/4193888))
+* refactoring ([0b49ff4](https://github.com/softwaregroup-bg/ut-port-performance/commit/0b49ff4))
+* refactoring ([071a0ff](https://github.com/softwaregroup-bg/ut-port-performance/commit/071a0ff))
+* remove metricsProvider folder ([1ce8387](https://github.com/softwaregroup-bg/ut-port-performance/commit/1ce8387))
+* remove space ([401be8b](https://github.com/softwaregroup-bg/ut-port-performance/commit/401be8b))
+* rename metric to tag ([87cc944](https://github.com/softwaregroup-bg/ut-port-performance/commit/87cc944))
+* rename super constructor function names ([2184826](https://github.com/softwaregroup-bg/ut-port-performance/commit/2184826))
+* rename superconstructors ([ef80acc](https://github.com/softwaregroup-bg/ut-port-performance/commit/ef80acc))
+* restructuring ([53aff41](https://github.com/softwaregroup-bg/ut-port-performance/commit/53aff41))
+* set proper names to measurement constructors ([8e2755b](https://github.com/softwaregroup-bg/ut-port-performance/commit/8e2755b))
+* start code reorganization ([8555225](https://github.com/softwaregroup-bg/ut-port-performance/commit/8555225))
+* typo - tag should actually be field ([f4fa9c1](https://github.com/softwaregroup-bg/ut-port-performance/commit/f4fa9c1))
+
+
+### Features
+
+* refactoring plus dynamic counters implementation ([cc2a470](https://github.com/softwaregroup-bg/ut-port-performance/commit/cc2a470))
+* send only measurements that have been updated ([13f3b40](https://github.com/softwaregroup-bg/ut-port-performance/commit/13f3b40))
+
+
+
 <a name="5.4.17"></a>
 ## [5.4.17](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.4.16...v5.4.17) (2017-05-22)
 
