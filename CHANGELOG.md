@@ -1,3 +1,13 @@
+<a name="5.5.2"></a>
+## [5.5.2](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.5.1...v5.5.2) (2017-08-15)
+
+
+### Bug Fixes
+
+* typo ([2a8ee98](https://github.com/softwaregroup-bg/ut-port-performance/commit/2a8ee98))
+
+
+
 <a name="5.5.1"></a>
 ## [5.5.1](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.5.0...v5.5.1) (2017-08-15)
 
