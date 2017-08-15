@@ -1,3 +1,13 @@
+<a name="5.5.1"></a>
+## [5.5.1](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.5.0...v5.5.1) (2017-08-15)
+
+
+### Bug Fixes
+
+* fix average field ([#4](https://github.com/softwaregroup-bg/ut-port-performance/issues/4)) ([3e8389b](https://github.com/softwaregroup-bg/ut-port-performance/commit/3e8389b))
+
+
+
 <a name="5.5.0"></a>
 # [5.5.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.4.17...v5.5.0) (2017-08-01)
 
