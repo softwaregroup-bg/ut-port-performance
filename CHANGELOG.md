@@ -1,3 +1,13 @@
+<a name="5.5.4"></a>
+## [5.5.4](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.5.3...v5.5.4) (2017-08-16)
+
+
+### Bug Fixes
+
+* add max field to average counter ([#6](https://github.com/softwaregroup-bg/ut-port-performance/issues/6)) ([2302aa4](https://github.com/softwaregroup-bg/ut-port-performance/commit/2302aa4))
+
+
+
 <a name="5.5.3"></a>
 ## [5.5.3](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.5.2...v5.5.3) (2017-08-16)
 
