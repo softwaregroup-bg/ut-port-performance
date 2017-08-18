@@ -22,14 +22,14 @@ module.exports = function(Parent) {
         util.inherits(PerformancePort, Parent);
     }
 
-    PerformancePort.prototype.register = function performancePortRegister(measurementName, fieldType, fieldCode, fieldName, measurementType) {
+    PerformancePort.prototype.register = function performancePortRegister(measurementName, fieldType, fieldCode, fieldName, measurementType, tags) {
         var measurementInstance = this.measurements[measurementName];
         if (!measurementInstance) {
             var Measurement = measurementConstructor[measurementType || 'standard'];
             if (!Measurement) {
                 throw new Error('invalid measurement type');
             }
-            measurementInstance = new Measurement(measurementName);
+            measurementInstance = new Measurement(measurementName, tags);
             this.measurements[measurementName] = measurementInstance;
         }
         return measurementInstance.register(fieldType, fieldCode, fieldName);
