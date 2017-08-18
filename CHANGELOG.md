@@ -1,3 +1,13 @@
+<a name="5.6.0"></a>
+# [5.6.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.5.4...v5.6.0) (2017-08-18)
+
+
+### Features
+
+* common tags for measurements ([f7e71cd](https://github.com/softwaregroup-bg/ut-port-performance/commit/f7e71cd))
+
+
+
 <a name="5.5.4"></a>
 ## [5.5.4](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.5.3...v5.5.4) (2017-08-16)
 
