@@ -1,3 +1,13 @@
+<a name="5.7.0"></a>
+# [5.7.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.6.0...v5.7.0) (2017-08-25)
+
+
+### Features
+
+* improve min/max fields ([0aaeac7](https://github.com/softwaregroup-bg/ut-port-performance/commit/0aaeac7))
+
+
+
 <a name="5.6.0"></a>
 # [5.6.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.5.4...v5.6.0) (2017-08-18)
 
