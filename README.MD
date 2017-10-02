@@ -17,21 +17,22 @@ The following configuration (as part of the environment configuration file) allo
 }
 ```
 
-This port exposes one significant method: register(namespace, type, code, name).
+This port exposes one significant method: register(namespace, type, code, name, interval).
 The parameters have the following meaning:
-  
+
   - **namespace**: the name of the InfluxDB measurement measurement
   - **type**: the type of measurement: 'gauge', 'counter', 'average'
   - **code**: a short, unique identifier of the metric within the measurement
   - **name**: the user friendly name of the metric
-  
+  - **interval** (in seconds): if passed, then counter average for this interval can be calculated on demand. The average is calculated over the flushed values. This means that interval should be longer than the flush interval, but also not too big, as memory for up to 100 flushes is reserved.
+
 The types of measurements have the following intended usage:
-  
+
   - **gauge**: measuring a direct value, which will be averaged over the count of observations: sum(cnt)/count. Useful for monitoring resource usage like memory, connection counts, etc.
   - **counter**: measuring the average rate of change of a value over the reported interval: diff(cnt)/diff(time). Useful for monitoring amounts like I/O count/volume, operations count, etc.
   - **average**: measuring the average rate of change of a value over the change of another value value: diff(cnt)/diff(base). Useful for monitoring resources spent per operation.
 
-The register method returns a function, which needs to be called when the corresponding registered metric changed its value. 
+The register method returns a function, which needs to be called when the corresponding registered metric changed its value.
 Depending on metric type, the function needs to be invoked with the following arguments:
 
   - **gauge(value)** - value is the observed metric
