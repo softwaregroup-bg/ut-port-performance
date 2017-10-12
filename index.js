@@ -10,7 +10,8 @@ module.exports = function(Parent) {
         this.config = Object.assign({
             id: null,
             logLevel: '',
-            type: 'performance'
+            type: 'performance',
+            mtu: 1400
         }, params && params.config);
         this.influxTime = [];
         this.statsTime = [];
@@ -39,13 +40,13 @@ module.exports = function(Parent) {
         return measurementInstance.register(fieldType, fieldCode, fieldName, interval);
     };
 
-    PerformancePort.prototype.influx = function influx(tags) {
+    PerformancePort.prototype.influx = function influx(tags, send) {
         var oldTime = this.influxTime;
         this.influxTime = hrtime();
         var deltaTime = (this.influxTime[0] - oldTime[0]) + (this.influxTime[0] - oldTime[0]) / 1000000000;
         var suffix = ' ' + Date.now() + '000000';
         return Object.keys(this.measurements).map((measurement) => {
-            return this.measurements[measurement].influx(deltaTime, tags, suffix);
+            return this.measurements[measurement].influx(deltaTime, tags, suffix, send);
         }).filter(x => x);
     };
 
@@ -85,12 +86,21 @@ module.exports = function(Parent) {
     };
 
     PerformancePort.prototype.write = function write(tags) {
-        var message = this.influx(tags).join('\n');
-        if (message) {
-            this.client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, (err) => {
-                err && this.log && this.log.error && this.log.error(err);
-            });
-        }
+        let packet = '';
+        let flush = () => packet.length && this.client.send(packet, 0, packet.length, this.config.influx.port, this.config.influx.host, (err) => {
+            err && this.log && this.log.error && this.log.error(err);
+        });
+        let buffer = counter => {
+            if (packet.length + counter.length >= this.config.mtu) {
+                flush();
+                packet = counter;
+            } else if (counter) {
+                packet = packet + (packet.length ? '\n' : '') + counter;
+            }
+        };
+
+        this.influx(tags, buffer);
+        flush();
     };
 
     return PerformancePort;
