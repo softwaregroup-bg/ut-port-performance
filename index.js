@@ -5,16 +5,19 @@ var measurementConstructor = {
 };
 
 module.exports = function(Parent) {
-    function PerformancePort() {
-        Parent && Parent.call(this);
-        this.config = {
+    function PerformancePort(params) {
+        Parent && Parent.apply(this, arguments);
+        this.config = Object.assign({
             id: null,
             logLevel: '',
             type: 'performance'
-        };
+        }, params && params.config);
         this.influxTime = [];
         this.statsTime = [];
         this.measurements = {};
+        if (params && params.bus) {
+            params.bus.performance = this;
+        }
     }
 
     if (Parent) {
@@ -30,6 +33,7 @@ module.exports = function(Parent) {
                 throw new Error('invalid measurement type');
             }
             measurementInstance = new Measurement(measurementName, tags);
+            measurementInstance.unregister = () => delete this.measurements[measurementName];
             this.measurements[measurementName] = measurementInstance;
         }
         return measurementInstance.register(fieldType, fieldCode, fieldName, interval);
