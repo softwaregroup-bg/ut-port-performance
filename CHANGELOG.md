@@ -1,3 +1,13 @@
+<a name="5.8.0"></a>
+# [5.8.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.7.0...v5.8.0) (2017-10-19)
+
+
+### Features
+
+* sliding window for up to 100 last measurements ([#9](https://github.com/softwaregroup-bg/ut-port-performance/issues/9)) ([eeb3504](https://github.com/softwaregroup-bg/ut-port-performance/commit/eeb3504))
+
+
+
 <a name="5.7.0"></a>
 # [5.7.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.6.0...v5.7.0) (2017-08-25)
 
