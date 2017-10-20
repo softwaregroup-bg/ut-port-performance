@@ -4,9 +4,9 @@ var measurementConstructor = {
     tagged: require('./lib/measurements/tagged')
 };
 
-module.exports = function(Parent) {
+module.exports = function({parent}) {
     function PerformancePort(params) {
-        Parent && Parent.apply(this, arguments);
+        parent && parent.apply(this, arguments);
         this.config = Object.assign({
             id: null,
             logLevel: '',
@@ -21,9 +21,9 @@ module.exports = function(Parent) {
         }
     }
 
-    if (Parent) {
+    if (parent) {
         var util = require('util');
-        util.inherits(PerformancePort, Parent);
+        util.inherits(PerformancePort, parent);
     }
 
     PerformancePort.prototype.register = function performancePortRegister(measurementName, fieldType, fieldCode, fieldName, measurementType, tags, interval) {
@@ -63,7 +63,7 @@ module.exports = function(Parent) {
     PerformancePort.prototype.start = function start() {
         var dgram = require('dgram');
         this.client = dgram.createSocket('udp4');
-        Parent && Parent.prototype.start.apply(this, arguments);
+        parent && parent.prototype.start.apply(this, arguments);
         this.statsTime = this.influxTime = hrtime();
         if (this.config && this.config.influx && this.config.influx.port && this.config.influx.host && !this.config.test) {
             this.interval = setInterval(function() {
