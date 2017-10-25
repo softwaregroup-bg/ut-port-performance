@@ -1,3 +1,13 @@
+<a name="5.9.0"></a>
+# [5.9.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.8.0...v5.9.0) (2017-10-25)
+
+
+### Bug Fixes
+
+* min/max handling ([74f644d](https://github.com/softwaregroup-bg/ut-port-performance/commit/74f644d))
+
+
+
 <a name="5.7.0"></a>
 # [5.7.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.6.0...v5.7.0) (2017-08-25)
 
