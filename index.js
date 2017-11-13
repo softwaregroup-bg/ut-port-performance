@@ -9,7 +9,7 @@ module.exports = function({parent}) {
         parent && parent.apply(this, arguments);
         this.config = Object.assign({
             id: null,
-            logLevel: '',
+            logLevel: 'info',
             type: 'performance',
             mtu: 1400
         }, params && params.config);
