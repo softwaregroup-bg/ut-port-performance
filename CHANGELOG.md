@@ -1,3 +1,13 @@
+<a name="6.0.0"></a>
+# [6.0.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.9.0...v6.0.0) (2017-12-06)
+
+
+### Features
+
+* mtu handling, sliding window, min/max gauge ([b9cdee0](https://github.com/softwaregroup-bg/ut-port-performance/commit/b9cdee0))
+
+
+
 <a name="5.9.0"></a>
 # [5.9.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.8.0...v5.9.0) (2017-10-25)
 
