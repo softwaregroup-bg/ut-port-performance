@@ -4,22 +4,26 @@ var measurementConstructor = {
     tagged: require('./lib/measurements/tagged')
 };
 
-module.exports = function(Parent) {
-    function PerformancePort() {
-        Parent && Parent.call(this);
-        this.config = {
+module.exports = function({parent}) {
+    function PerformancePort(params) {
+        parent && parent.apply(this, arguments);
+        this.config = Object.assign({
             id: null,
-            logLevel: '',
-            type: 'performance'
-        };
+            logLevel: 'info',
+            type: 'performance',
+            mtu: 1400
+        }, params && params.config);
         this.influxTime = [];
         this.statsTime = [];
         this.measurements = {};
+        if (params && params.bus) {
+            params.bus.performance = this;
+        }
     }
 
-    if (Parent) {
+    if (parent) {
         var util = require('util');
-        util.inherits(PerformancePort, Parent);
+        util.inherits(PerformancePort, parent);
     }
 
     PerformancePort.prototype.register = function performancePortRegister(measurementName, fieldType, fieldCode, fieldName, measurementType, tags, interval) {
@@ -30,18 +34,19 @@ module.exports = function(Parent) {
                 throw new Error('invalid measurement type');
             }
             measurementInstance = new Measurement(measurementName, tags);
+            measurementInstance.unregister = () => delete this.measurements[measurementName];
             this.measurements[measurementName] = measurementInstance;
         }
         return measurementInstance.register(fieldType, fieldCode, fieldName, interval);
     };
 
-    PerformancePort.prototype.influx = function influx(tags) {
+    PerformancePort.prototype.influx = function influx(tags, send) {
         var oldTime = this.influxTime;
         this.influxTime = hrtime();
         var deltaTime = (this.influxTime[0] - oldTime[0]) + (this.influxTime[0] - oldTime[0]) / 1000000000;
         var suffix = ' ' + Date.now() + '000000';
         return Object.keys(this.measurements).map((measurement) => {
-            return this.measurements[measurement].influx(deltaTime, tags, suffix);
+            return this.measurements[measurement].influx(deltaTime, tags, suffix, send);
         }).filter(x => x);
     };
 
@@ -58,7 +63,7 @@ module.exports = function(Parent) {
     PerformancePort.prototype.start = function start() {
         var dgram = require('dgram');
         this.client = dgram.createSocket('udp4');
-        Parent && Parent.prototype.start.apply(this, arguments);
+        parent && parent.prototype.start.apply(this, arguments);
         this.statsTime = this.influxTime = hrtime();
         if (this.config && this.config.influx && this.config.influx.port && this.config.influx.host && !this.config.test) {
             this.interval = setInterval(function() {
@@ -81,12 +86,21 @@ module.exports = function(Parent) {
     };
 
     PerformancePort.prototype.write = function write(tags) {
-        var message = this.influx(tags).join('\n');
-        if (message) {
-            this.client.send(message, 0, message.length, this.config.influx.port, this.config.influx.host, (err) => {
-                err && this.log && this.log.error && this.log.error(err);
-            });
-        }
+        let packet = '';
+        let flush = () => packet.length && this.client.send(packet, 0, packet.length, this.config.influx.port, this.config.influx.host, (err) => {
+            err && this.log && this.log.error && this.log.error(err);
+        });
+        let buffer = counter => {
+            if (packet.length + counter.length >= this.config.mtu) {
+                flush();
+                packet = counter;
+            } else if (counter) {
+                packet = packet + (packet.length ? '\n' : '') + counter;
+            }
+        };
+
+        this.influx(tags, buffer);
+        flush();
     };
 
     return PerformancePort;
