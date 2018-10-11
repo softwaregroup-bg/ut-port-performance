@@ -11,6 +11,7 @@ module.exports = function({parent}) {
             id: null,
             logLevel: 'info',
             type: 'performance',
+            namespace: [],
             mtu: 1400
         }, params && params.config);
         this.influxTime = [];
