@@ -4,30 +4,23 @@ var measurementConstructor = {
     tagged: require('./lib/measurements/tagged')
 };
 
-module.exports = function({parent}) {
-    function PerformancePort(params) {
-        parent && parent.apply(this, arguments);
-        this.config = Object.assign({
-            id: null,
-            logLevel: 'info',
-            type: 'performance',
-            namespace: [],
-            mtu: 1400
-        }, params && params.config);
+module.exports = ({utPort}) => class PerformancePort extends utPort {
+    constructor({utBus}) {
+        super(...arguments);
         this.influxTime = [];
         this.statsTime = [];
         this.measurements = {};
-        if (params && params.bus) {
-            params.bus.performance = this;
+        if (utBus) {
+            utBus.performance = this;
         }
     }
-
-    if (parent) {
-        var util = require('util');
-        util.inherits(PerformancePort, parent);
+    get defaults() {
+        return {
+            type: 'performance',
+            mtu: 1400
+        };
     }
-
-    PerformancePort.prototype.register = function performancePortRegister(measurementName, fieldType, fieldCode, fieldName, measurementType, tags, interval) {
+    register(measurementName, fieldType, fieldCode, fieldName, measurementType, tags, interval) {
         var measurementInstance = this.measurements[measurementName];
         if (!measurementInstance) {
             var Measurement = measurementConstructor[measurementType || 'standard'];
@@ -39,9 +32,8 @@ module.exports = function({parent}) {
             this.measurements[measurementName] = measurementInstance;
         }
         return measurementInstance.register(fieldType, fieldCode, fieldName, interval);
-    };
-
-    PerformancePort.prototype.influx = function influx(tags, send) {
+    }
+    influx(tags, send) {
         var oldTime = this.influxTime;
         this.influxTime = hrtime();
         var deltaTime = (this.influxTime[0] - oldTime[0]) + (this.influxTime[0] - oldTime[0]) / 1000000000;
@@ -49,9 +41,8 @@ module.exports = function({parent}) {
         return Object.keys(this.measurements).map((measurement) => {
             return this.measurements[measurement].influx(deltaTime, tags, suffix, send);
         }).filter(x => x);
-    };
-
-    PerformancePort.prototype.stats = function stats(tags) {
+    }
+    stats(tags) {
         var oldTime = this.statsTime;
         this.statsTime = hrtime();
         var deltaTime = (this.statsTime[0] - oldTime[0]) + (this.statsTime[0] - oldTime[0]) / 1000000000;
@@ -59,21 +50,19 @@ module.exports = function({parent}) {
         return Object.keys(this.measurements).map((measurement) => {
             return this.measurements[measurement].statsD(deltaTime, tags, suffix);
         }).filter(x => x);
-    };
-
-    PerformancePort.prototype.start = function start() {
+    }
+    start() {
         var dgram = require('dgram');
         this.client = dgram.createSocket('udp4');
-        parent && parent.prototype.start.apply(this, arguments);
+        super.start(...arguments);
         this.statsTime = this.influxTime = hrtime();
         if (this.config && this.config.influx && this.config.influx.port && this.config.influx.host && !this.config.test) {
             this.interval = setInterval(function() {
                 this.write();
             }.bind(this), this.config.influx.interval || 5000);
         }
-    };
-
-    PerformancePort.prototype.stop = function stop() {
+    }
+    stop() {
         clearInterval(this.interval);
         if (this.client) {
             return new Promise((resolve) => {
@@ -83,10 +72,10 @@ module.exports = function({parent}) {
                 this.client.unref();
                 this.client = null;
             });
-        };
-    };
-
-    PerformancePort.prototype.write = function write(tags) {
+        }
+        ;
+    }
+    write(tags) {
         let packet = '';
         let flush = () => packet.length && this.client.send(packet, 0, packet.length, this.config.influx.port, this.config.influx.host, (err) => {
             err && this.log && this.log.error && this.log.error(err);
@@ -99,10 +88,7 @@ module.exports = function({parent}) {
                 packet = packet + (packet.length ? '\n' : '') + counter;
             }
         };
-
         this.influx(tags, buffer);
         flush();
-    };
-
-    return PerformancePort;
+    }
 };
