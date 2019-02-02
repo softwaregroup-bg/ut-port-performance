@@ -1,3 +1,20 @@
+# [7.0.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v6.0.0...v7.0.0) (2019-02-02)
+
+
+### Bug Fixes
+
+* do not handle any namespace ([43872ce](https://github.com/softwaregroup-bg/ut-port-performance/commit/43872ce))
+* refactor as class ([#13](https://github.com/softwaregroup-bg/ut-port-performance/issues/13)) ([5a23fe0](https://github.com/softwaregroup-bg/ut-port-performance/commit/5a23fe0))
+* upgrade dependencies ([0c9464b](https://github.com/softwaregroup-bg/ut-port-performance/commit/0c9464b))
+* upgrade ut-tools ([ee17159](https://github.com/softwaregroup-bg/ut-port-performance/commit/ee17159))
+
+
+### BREAKING CHANGES
+
+* requires upgrade of ut-port and ut-run
+
+
+
 <a name="6.0.0"></a>
 # [6.0.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v5.9.0...v6.0.0) (2017-12-06)
 

@@ -1,6 +1,6 @@
 {
   "name": "ut-port-performance",
-  "version": "6.1.0-rc-godfather.2",
+  "version": "7.0.0",
   "dependencies": {
     "browser-process-hrtime": "1.0.0"
   },
