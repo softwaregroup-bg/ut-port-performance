@@ -1,6 +1,6 @@
 {
   "name": "ut-port-performance",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "dependencies": {
     "browser-process-hrtime": "1.0.0"
   },
