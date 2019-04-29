@@ -61,6 +61,7 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
                 this.write();
             }.bind(this), this.config.influx.interval || 5000);
         }
+        this.resolveConnected(true);
     }
     stop() {
         clearInterval(this.interval);
