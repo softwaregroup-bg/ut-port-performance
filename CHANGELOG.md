@@ -1,3 +1,12 @@
+## [7.0.2](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.0.1...v7.0.2) (2019-04-29)
+
+
+### Bug Fixes
+
+* resolve connected ([297c401](https://github.com/softwaregroup-bg/ut-port-performance/commit/297c401))
+
+
+
 ## [7.0.1](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.0.0...v7.0.1) (2019-03-22)
 
 
