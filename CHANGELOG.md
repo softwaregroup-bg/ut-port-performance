@@ -1,3 +1,12 @@
+## [7.1.1](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.0...v7.1.1) (2019-09-09)
+
+
+### Bug Fixes
+
+* create client during tests ([6478d3d](https://github.com/softwaregroup-bg/ut-port-performance/commit/6478d3d))
+
+
+
 # [7.1.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.0.2...v7.1.0) (2019-09-08)
 
 
