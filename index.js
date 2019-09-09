@@ -69,12 +69,14 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
     start() {
         super.start(...arguments);
         this.statsTime = this.influxTime = this.prometheusTime = hrtime();
-        if (this.config && this.config.influx && this.config.influx.port && this.config.influx.host && !this.config.test) {
+        if (this.config && this.config.influx && this.config.influx.port && this.config.influx.host) {
             const dgram = require('dgram');
             this.client = dgram.createSocket('udp4');
-            this.interval = setInterval(function() {
-                this.write();
-            }.bind(this), this.config.influx.interval || 5000);
+            if (!this.config.test) {
+                this.interval = setInterval(function() {
+                    this.write();
+                }.bind(this), this.config.influx.interval || 5000);
+            }
         }
         if (this.config && this.config.prometheus && this.config.prometheus.port) {
             const http = require('http');
