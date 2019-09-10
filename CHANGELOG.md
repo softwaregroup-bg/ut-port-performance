@@ -1,3 +1,12 @@
+## [7.1.3](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.2...v7.1.3) (2019-09-10)
+
+
+### Bug Fixes
+
+* handle missing tags ([df3e68e](https://github.com/softwaregroup-bg/ut-port-performance/commit/df3e68e))
+
+
+
 ## [7.1.2](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.1...v7.1.2) (2019-09-10)
 
 
