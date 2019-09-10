@@ -22,7 +22,7 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
         };
     }
     register(measurementName, fieldType, fieldCode, fieldName, measurementType, tags, interval, fieldCodeExt) {
-        let measurementId = tags.port ? tags.port + measurementName : measurementName;
+        let measurementId = (tags && tags.port) ? tags.port + measurementName : measurementName;
         let measurementInstance = this.measurements[measurementId];
         if (!measurementInstance) {
             const Measurement = measurementConstructor[measurementType || 'standard'];
