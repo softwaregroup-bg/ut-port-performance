@@ -1,3 +1,12 @@
+## [7.1.2](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.1...v7.1.2) (2019-09-10)
+
+
+### Bug Fixes
+
+* simplify measurement names ([0e494bb](https://github.com/softwaregroup-bg/ut-port-performance/commit/0e494bb))
+
+
+
 ## [7.1.1](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.0...v7.1.1) (2019-09-09)
 
 
