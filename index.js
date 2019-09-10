@@ -22,7 +22,8 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
         };
     }
     register(measurementName, fieldType, fieldCode, fieldName, measurementType, tags, interval, fieldCodeExt) {
-        let measurementInstance = this.measurements[measurementName];
+        let measurementId = tags.port ? tags.port + measurementName : measurementName;
+        let measurementInstance = this.measurements[measurementId];
         if (!measurementInstance) {
             const Measurement = measurementConstructor[measurementType || 'standard'];
             if (!Measurement) {
@@ -32,8 +33,8 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
                 influx: !!this.config.influx,
                 prometheus: !!this.config.prometheus
             });
-            measurementInstance.unregister = () => delete this.measurements[measurementName];
-            this.measurements[measurementName] = measurementInstance;
+            measurementInstance.unregister = () => delete this.measurements[measurementId];
+            this.measurements[measurementId] = measurementInstance;
         }
         return measurementInstance.register(fieldType, fieldCodeExt || fieldCode, fieldName, interval);
     }
