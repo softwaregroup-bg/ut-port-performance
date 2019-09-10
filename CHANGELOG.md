@@ -1,3 +1,12 @@
+## [7.1.4](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.3...v7.1.4) (2019-09-10)
+
+
+### Bug Fixes
+
+* set to zero in prometheus if not changed ([0e31c7f](https://github.com/softwaregroup-bg/ut-port-performance/commit/0e31c7f))
+
+
+
 ## [7.1.3](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.2...v7.1.3) (2019-09-10)
 
 
