@@ -5,7 +5,7 @@
     "browser-process-hrtime": "1.0.0"
   },
   "devDependencies": {
-    "tap": "^13.1.1",
+    "tap": "^12.7.0",
     "ut-tools": "^6.30.5"
   },
   "peerDependencies": {},
