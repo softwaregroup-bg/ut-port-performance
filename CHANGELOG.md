@@ -1,3 +1,12 @@
+## [7.1.6](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.5...v7.1.6) (2020-07-27)
+
+
+### Bug Fixes
+
+* tag was renamed to match logging ([d2b1849](https://github.com/softwaregroup-bg/ut-port-performance/commit/d2b18496180830ccbe974cc7d47c5fdfbafbfe0c))
+
+
+
 ## [7.1.5](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.4...v7.1.5) (2020-01-17)
 
 
