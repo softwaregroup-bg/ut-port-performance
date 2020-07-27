@@ -15,14 +15,16 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
             utBus.performance = this;
         }
     }
+
     get defaults() {
         return {
             type: 'performance',
             mtu: 1400
         };
     }
+
     register(measurementName, fieldType, fieldCode, fieldName, measurementType, tags, interval, fieldCodeExt) {
-        let measurementId = (tags && tags.port) ? tags.port + measurementName : measurementName;
+        const measurementId = (tags && tags.name) ? tags.name + measurementName : measurementName;
         let measurementInstance = this.measurements[measurementId];
         if (!measurementInstance) {
             const Measurement = measurementConstructor[measurementType || 'standard'];
@@ -38,6 +40,7 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
         }
         return measurementInstance.register(fieldType, fieldCodeExt || fieldCode, fieldName, interval);
     }
+
     influx(tags, send) {
         if (!this.config.influx) return;
         const oldTime = this.influxTime;
@@ -48,6 +51,7 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
             return this.measurements[measurement].influx(deltaTime, tags, suffix, send);
         }).filter(x => x);
     }
+
     stats(tags) {
         const oldTime = this.statsTime;
         this.statsTime = hrtime();
@@ -57,6 +61,7 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
             return this.measurements[measurement].statsD(deltaTime, tags, suffix);
         }).filter(x => x);
     }
+
     prometheus() {
         if (!this.config.prometheus) return '# Prometheus metrics not enabled';
         const oldTime = this.prometheusTime;
@@ -67,6 +72,7 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
             return this.measurements[measurement].prometheus(deltaTime, suffix);
         }).filter(x => x).join('\n');
     }
+
     start() {
         super.start(...arguments);
         this.statsTime = this.influxTime = this.prometheusTime = hrtime();
@@ -116,6 +122,7 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
         }
         this.resolveConnected(true);
     }
+
     stop() {
         try {
             if (this.interval) clearInterval(this.interval);
@@ -149,12 +156,13 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
         }
         return Promise.all(result);
     }
+
     write(tags) {
         let packet = '';
-        let flush = () => packet.length && this.client.send(packet, 0, packet.length, this.config.influx.port, this.config.influx.host, (err) => {
+        const flush = () => packet.length && this.client.send(packet, 0, packet.length, this.config.influx.port, this.config.influx.host, (err) => {
             err && this.log && this.log.error && this.log.error(err);
         });
-        let buffer = counter => {
+        const buffer = counter => {
             if (packet.length + counter.length >= this.config.mtu) {
                 flush();
                 packet = counter;
