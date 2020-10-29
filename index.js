@@ -70,7 +70,7 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
         const suffix = ' ' + Date.now();
         return Object.keys(this.measurements).map((measurement) => {
             return this.measurements[measurement].prometheus(deltaTime, suffix);
-        }).filter(x => x).join('\n');
+        }).filter(x => x).join('\n') + '\n';
     }
 
     start() {
