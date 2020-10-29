@@ -1,3 +1,12 @@
+## [7.1.7](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.6...v7.1.7) (2020-10-29)
+
+
+### Bug Fixes
+
+* istio ([c108519](https://github.com/softwaregroup-bg/ut-port-performance/commit/c1085197076b62f85e8d77afce8e42405019380d))
+
+
+
 ## [7.1.6](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.5...v7.1.6) (2020-07-27)
 
 
