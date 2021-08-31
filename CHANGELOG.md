@@ -1,3 +1,12 @@
+## [7.1.8](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.7...v7.1.8) (2021-08-31)
+
+
+### Bug Fixes
+
+* avoid stale port metrics ([434c3ef](https://github.com/softwaregroup-bg/ut-port-performance/commit/434c3ef97f1625aa2f668b8be7f59d5b00f1f911))
+
+
+
 ## [7.1.7](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.6...v7.1.7) (2020-10-29)
 
 
