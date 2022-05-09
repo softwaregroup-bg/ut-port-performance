@@ -1,3 +1,12 @@
+## [7.1.9](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.8...v7.1.9) (2022-05-09)
+
+
+### Bug Fixes
+
+* report both count and rate ([d6e366f](https://github.com/softwaregroup-bg/ut-port-performance/commit/d6e366fd9d75090c9e3802b864ffc51d4098e9f4))
+
+
+
 ## [7.1.8](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.7...v7.1.8) (2021-08-31)
 
 
