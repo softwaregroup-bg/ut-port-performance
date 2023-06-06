@@ -1,3 +1,12 @@
+# [7.2.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.9...v7.2.0) (2023-06-06)
+
+
+### Features
+
+* counters ([50c9f53](https://github.com/softwaregroup-bg/ut-port-performance/commit/50c9f53ca643aff1ea81acc3e5f85773edd23db8))
+
+
+
 ## [7.1.9](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.8...v7.1.9) (2022-05-09)
 
 
