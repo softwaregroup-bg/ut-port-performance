@@ -73,6 +73,12 @@ module.exports = ({utPort}) => class PerformancePort extends utPort {
         }).filter(x => x).join('\n') + '\n';
     }
 
+    counters() {
+        return Object.keys(this.measurements).map((measurement) => {
+            return this.measurements[measurement].counter(1, '');
+        }).filter(x => x).join('\n') + '\n';
+    }
+
     start() {
         super.start(...arguments);
         this.statsTime = this.influxTime = this.prometheusTime = hrtime();
