@@ -1,3 +1,12 @@
+## [7.2.1](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.2.0...v7.2.1) (2023-06-08)
+
+
+### Bug Fixes
+
+* optimize counters ([93d52ba](https://github.com/softwaregroup-bg/ut-port-performance/commit/93d52ba0842db997abb037b2119029484a69f608))
+
+
+
 # [7.2.0](https://github.com/softwaregroup-bg/ut-port-performance/compare/v7.1.9...v7.2.0) (2023-06-06)
 
 
