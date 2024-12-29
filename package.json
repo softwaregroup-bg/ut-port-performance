@@ -2,10 +2,8 @@
   "name": "ut-port-performance",
   "version": "6.0.0",
   "dependencies": {
-    "browser-process-hrtime": "0.1.2"
   },
   "devDependencies": {
-    "ut-tools": "^5.13.5"
   },
   "peerDependencies": {},
   "description": "UT port performance module",
